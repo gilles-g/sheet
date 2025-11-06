@@ -14,8 +14,11 @@
   },
   "files": [
     "dist",
+    "docs",
     "README.md",
-    "MIGRATION.md"
+    "MIGRATION.md",
+    "BRANCHES.md",
+    "SECURITY.md"
   ],
   "author": "Gilles Gauthier",
   "license": "MIT",
