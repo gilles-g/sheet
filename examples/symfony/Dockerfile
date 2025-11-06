@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -24,11 +26,14 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . /var/www/html
 
-# Install dependencies
+# Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
+# Install Node dependencies and build assets
+RUN npm install && npm run build
+
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/var
+RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public/build
 
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000

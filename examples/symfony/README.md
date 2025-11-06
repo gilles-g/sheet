@@ -5,12 +5,14 @@ This is a complete working example demonstrating how to use the `stimulus-sheet`
 ## Features
 
 - **Symfony 7.1** - Latest Symfony framework
+- **Webpack Encore** - Modern asset management and bundling
 - **stimulus-sheet** - Slide-in panel component
 - **Turbo** - For seamless form submissions
 - **Docker** - Containerized development environment
 - **MariaDB** - Database backend
 - **User CRUD** - Complete Create, Read, Update, Delete functionality
 - **Form validation** - Server-side validation with Symfony forms
+- **Panther Tests** - Browser-based tests for AJAX functionality
 
 ## Prerequisites
 
@@ -240,6 +242,55 @@ docker compose exec database mysql -u app -p
 ```bash
 docker compose exec php php bin/console cache:clear
 ```
+
+### Build frontend assets
+
+```bash
+docker compose exec php npm run build
+```
+
+Or for development with watch mode:
+
+```bash
+docker compose exec php npm run watch
+```
+
+## Testing
+
+This demo includes browser-based tests using Symfony Panther to test AJAX functionality.
+
+### Running Tests
+
+```bash
+# Run all tests
+docker compose exec php php bin/phpunit
+
+# Run specific test
+docker compose exec php php bin/phpunit tests/SheetTest.php
+
+# Run with verbose output
+docker compose exec php php bin/phpunit --testdox
+```
+
+### What's Tested
+
+The test suite (`tests/SheetTest.php`) includes:
+
+- **Page Loading**: Verifies the user list page loads correctly
+- **AJAX Sheet Opening**: Tests that clicking the create button opens a sheet via AJAX
+- **Form Validation**: Ensures client-side and server-side validation works
+- **User Creation**: Tests creating a user via AJAX and sheet closure
+- **Close Button**: Verifies the close button properly closes the sheet
+- **Edit Functionality**: Tests opening edit forms with pre-filled data via AJAX
+
+### Test Requirements
+
+Panther tests use a real browser (Chrome/Firefox) in headless mode. The tests will:
+
+1. Download ChromeDriver automatically (first run only)
+2. Launch a headless browser
+3. Interact with the application like a real user
+4. Verify AJAX requests and DOM updates
 
 ## Environment Variables
 
