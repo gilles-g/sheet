@@ -525,6 +525,72 @@ framework:
 - Check Webpack Encore configuration
 - Clear cache: `php bin/console cache:clear`
 
+## Advanced: Nested Sheets
+
+The stimulus-sheet component supports stacking multiple sheets on top of each other, enabling complex workflows like creating related entities within a form.
+
+### Use Case: Creating a Recipe with Ingredients
+
+Imagine a recipe form where users can add ingredients. If the ingredient doesn't exist, they should be able to create it without leaving the current form.
+
+**Implementation:**
+
+1. **Parent Sheet**: Recipe ingredient form with ingredient selector and quantity field
+2. **Nested Sheet**: Ingredient creation form opened from within the parent sheet
+
+```twig
+{# templates/recipe/_ingredient_form_sheet.html.twig #}
+<div class="sheet-wrapper">
+    <div class="sheet-header">
+        <h2>Add Ingredient to Recipe</h2>
+        <button data-action="click->sheet#close" class="btn-close"></button>
+    </div>
+    
+    <div class="sheet-scrollpane">
+        <div class="sheet-content">
+            {{ form_start(form) }}
+            
+            <div class="mb-3">
+                {{ form_row(form.ingredient) }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form_row(form.quantity) }}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                Add Ingredient
+            </button>
+            
+            {{ form_end(form) }}
+            
+            {# Button to open nested sheet for creating new ingredient #}
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="text-muted mb-2">Don't see the ingredient you need?</p>
+                <button 
+                    data-controller="sheet-opener"
+                    data-action="click->sheet-opener#open"
+                    data-sheet-opener-url-value="{{ path('ingredient_create_sheet') }}"
+                    class="btn btn-outline-primary">
+                    Create New Ingredient
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+**How it works:**
+
+1. User clicks "Add Ingredient" → First sheet opens
+2. User sees the ingredient selector but the desired ingredient isn't in the list
+3. User clicks "Create New Ingredient" → Second sheet opens on top
+4. User fills in the ingredient form and submits
+5. Nested sheet closes, page reloads, and the new ingredient is now available in the selector
+
+The stimulus-sheet component automatically handles the z-index stacking and overlay management for nested sheets.
+
 ## Complete Working Example
 
 See the example Symfony project in the `examples/symfony` directory for a complete working implementation with Docker and MariaDB.
@@ -535,5 +601,6 @@ The demo includes:
 - Complete Symfony 7.1 application
 - Docker Compose setup with PHP, Nginx, and MariaDB
 - User CRUD with stimulus-sheet integration
+- **Nested sheets** for recipe and ingredient management
 - Form validation and Turbo Streams
 - One-command setup with `docker compose up`
