@@ -1,0 +1,22 @@
+<turbo-stream action="refresh" target="user-list">
+    <template></template>
+</turbo-stream>
+
+{# Close the sheet after successful submission #}
+<script>
+    // Find and close the active sheet
+    const sheets = document.querySelectorAll('[data-controller*="sheet"]');
+    if (sheets.length > 0) {
+        const lastSheet = sheets[sheets.length - 1];
+        const closeBtn = lastSheet.querySelector('[data-action*="sheet#close"]');
+        if (closeBtn) {
+            closeBtn.click();
+        }
+    }
+    
+    // Show success message
+    setTimeout(() => {
+        alert('User {{ action }}!');
+        window.location.reload();
+    }, 100);
+</script>
