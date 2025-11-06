@@ -11,3 +11,6 @@ export const app = startStimulusApp(require.context(
 // Register sheet controllers
 app.register('sheet', SheetController);
 app.register('sheet-list', SheetListController);
+
+// Make the Stimulus application globally available for easy access
+window.Stimulus = app;
