@@ -71,10 +71,13 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/{id}/delete', name: 'user_delete', methods: ['POST'])]
-    public function delete(User $user, EntityManagerInterface $em): Response
+    public function delete(User $user, Request $request, EntityManagerInterface $em): Response
     {
-        $em->remove($user);
-        $em->flush();
+        // Validate CSRF token
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+            $em->remove($user);
+            $em->flush();
+        }
         
         return $this->redirectToRoute('user_list');
     }

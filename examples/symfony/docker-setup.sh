@@ -14,10 +14,18 @@ docker compose up -d --build
 echo "⏳ Waiting for database to be ready..."
 sleep 10
 
-# Check if database is ready
+# Check if database is ready (with timeout)
+MAX_RETRIES=30
+RETRY_COUNT=0
 until docker compose exec -T database healthcheck.sh --connect --innodb_initialized &> /dev/null
 do
-    echo "   Database not ready yet, waiting..."
+    RETRY_COUNT=$((RETRY_COUNT+1))
+    if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+        echo "❌ Database failed to start after $MAX_RETRIES attempts"
+        echo "   Please check logs with: docker compose logs database"
+        exit 1
+    fi
+    echo "   Database not ready yet, waiting... (attempt $RETRY_COUNT/$MAX_RETRIES)"
     sleep 5
 done
 
