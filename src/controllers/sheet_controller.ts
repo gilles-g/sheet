@@ -61,14 +61,9 @@ export default class SheetController extends Controller {
 
   private calculateWidth() {
     const width = document.documentElement.clientWidth;
-    let maxWidth = 0;
-    const minWidth = Math.floor((width - 960) / 2);
     let padding = 0;
 
-    if (maxWidth) {
-      maxWidth = Math.max(maxWidth, minWidth);
-      padding = Math.max(width - maxWidth, 0);
-    } else if (width >= 1160) {
+    if (width >= 1160) {
       padding = Math.floor((width - 960) / 2);
     } else if (width >= 768) {
       padding = Math.floor((width - 768) / 2);
