@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ recipe.name }} - Stimulus Sheet Demo{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>{{ recipe.name }}</h1>
+            <div>
+                <button 
+                    data-controller="sheet-opener"
+                    data-action="click->sheet-opener#open"
+                    data-sheet-opener-url-value="{{ path('recipe_ingredient_add_sheet', {id: recipe.id}) }}"
+                    class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add Ingredient
+                </button>
+                <a href="{{ path('recipe_list') }}" class="btn btn-secondary">
+                    Back to Recipes
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Ingredients</h3>
+            </div>
+            <div class="card-body">
+                {% if recipe.recipeIngredients is empty %}
+                    <div class="alert alert-info">
+                        No ingredients yet. Click "Add Ingredient" to add ingredients to this recipe!
+                    </div>
+                {% else %}
+                    <table class="table table-hover" id="ingredient-list">
+                        <thead>
+                            <tr>
+                                <th>Ingredient</th>
+                                <th>Quantity</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for recipeIngredient in recipe.recipeIngredients %}
+                            <tr>
+                                <td>{{ recipeIngredient.ingredient.name }}</td>
+                                <td>{{ recipeIngredient.quantity }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('recipe_ingredient_delete', {id: recipe.id, ingredientId: recipeIngredient.id}) }}" style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipeIngredient.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-danger" 
+                                                onclick="return confirm('Are you sure you want to remove this ingredient?')">
+                                            Remove
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
