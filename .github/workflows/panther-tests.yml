@@ -10,6 +10,9 @@ jobs:
   panther-tests:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     services:
       mysql:
         image: mariadb:11.4
