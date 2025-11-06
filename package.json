@@ -1,45 +1,50 @@
 {
-  "name": "ng2-sheet",
-  "version": "1.0.12",
-  "description": "Angular2 Sheet component",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "name": "stimulus-sheet",
+  "version": "2.0.0",
+  "description": "Stimulus Sheet component - slide-in panels from the right",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "npm run build",
-    "build": "ngc -p tsconfig-aot.json"
+    "build": "rollup -c && npm run copy-css",
+    "copy-css": "cp src/sheet.css dist/sheet.css",
+    "dev": "rollup -c -w",
+    "test": "echo \"No tests yet\" && exit 0"
   },
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "MIGRATION.md",
+    "BRANCHES.md",
+    "SECURITY.md"
+  ],
   "author": "Gilles Gauthier",
   "license": "MIT",
   "devDependencies": {
-    "@angular/common": "^4.0.0",
-    "@angular/compiler": "^4.0.0",
-    "@angular/compiler-cli": "^4.0.0",
-    "@angular/core": "^4.0.0",
-    "@angular/forms": "^4.0.0",
-    "@angular/platform-browser": "^4.0.0",
-    "@angular/platform-browser-dynamic": "^4.0.0",
-    "@angular/platform-server": "^4.0.0",
-    "@angular/router": "^4.0.0",
-    "@types/core-js": "^0.9.34",
-    "@types/node": "^6.0.45",
-    "rxjs": "^5.1.0",
-    "simplemde": "^1.11.2",
-    "zone.js": "^0.8.5"
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "rollup": "^3.29.5",
+    "tslib": "^2.8.1",
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
-    "@angular/common": "^4.0.0",
-    "@angular/core": "^4.0.0",
-    "@angular/forms": "^4.0.0"
-  },
-  "dependencies": {
-    "jquery": "^3.2.1"
+    "@hotwired/stimulus": "^3.0.0"
   },
   "directories": {
-    "lib": "lib"
+    "lib": "dist"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lexikteam/ng2-sheet"
+    "url": "git+https://github.com/gilles-g/sheet"
   },
-  "homepage": "https://github.com/lexikteam/ng2-sheet#readme"
+  "homepage": "https://github.com/gilles-g/sheet#readme",
+  "keywords": [
+    "stimulus",
+    "sheet",
+    "drawer",
+    "panel",
+    "slide-in"
+  ]
 }

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stimulus Sheet Example</title>
+  
+  <!-- Include the sheet styles -->
+  <link rel="stylesheet" href="src/sheet.css">
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+    }
+    
+    .demo-controls {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    button:hover {
+      background: #0056b3;
+    }
+    
+    .sheet-demo-content {
+      padding: 20px;
+    }
+    
+    .sheet-demo-content h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-controls">
+    <h1>Stimulus Sheet Demo</h1>
+    <p>Click the buttons below to open sheets from the right.</p>
+    
+    <button onclick="openSimpleSheet()">Open Simple Sheet</button>
+    <button onclick="openFormSheet()">Open Form Sheet</button>
+    <button onclick="openNestedSheet()">Open Nested Sheets</button>
+  </div>
+
+  <!-- Sheet List Container -->
+  <div class="sheet-holder" data-controller="sheet-list">
+    <div data-sheet-list-target="container"></div>
+  </div>
+
+  <!-- Import Stimulus -->
+  <script type="module">
+    import { Application } from "https://unpkg.com/@hotwired/stimulus@3.2.1/dist/stimulus.js";
+    
+    // Import controllers (in production, these would come from the built package)
+    // For this demo, we'll define them inline
+    import { Controller } from "https://unpkg.com/@hotwired/stimulus@3.2.1/dist/stimulus.js";
+    
+    // Sheet Controller
+    class SheetController extends Controller {
+      static targets = ["overlay", "sheet", "content"];
+      
+      connect() {
+        this.updateSheetWidth();
+        this.showSheet();
+      }
+      
+      close() {
+        this.closeSheet();
+      }
+      
+      closeSheet() {
+        this.overlayTarget.style.opacity = "0";
+        const docWidth = document.documentElement.clientWidth;
+        this.sheetTarget.style.transform = `translate(${docWidth}px, 0px)`;
+        
+        setTimeout(() => {
+          this.element.remove();
+          this.dispatch("closed", { detail: {} });
+        }, 500);
+      }
+      
+      showSheet() {
+        this.calculateWidth();
+        
+        const docWidth = document.documentElement.clientWidth;
+        this.sheetTarget.style.transform = `translate(${docWidth}px, 0px)`;
+        
+        this.overlayTarget.style.opacity = "0.12";
+        this.overlayTarget.style.visibility = "visible";
+        
+        setTimeout(() => {
+          this.sheetTarget.style.transform = `translate(${this.widthValue}px, 0px)`;
+        }, 100);
+      }
+      
+      updateSheetWidth() {
+        this.calculateWidth();
+        this.sheetTarget.style.maxWidth = `${this.maxWidthValue}px`;
+      }
+      
+      calculateWidth() {
+        const width = document.documentElement.clientWidth;
+        let maxWidth = 0;
+        const minWidth = Math.floor((width - 960) / 2);
+        let padding = 0;
+        
+        if (maxWidth) {
+          maxWidth = Math.max(maxWidth, minWidth);
+          padding = Math.max(width - maxWidth, 0);
+        } else if (width >= 1160) {
+          padding = Math.floor((width - 960) / 2);
+        } else if (width >= 768) {
+          padding = Math.floor((width - 768) / 2);
+        }
+        
+        this.maxWidthValue = width - padding;
+        this.widthValue = padding;
+      }
+    }
+    
+    // Sheet List Controller
+    class SheetListController extends Controller {
+      static targets = ["container"];
+      
+      connect() {
+        this.sheets = [];
+        window.sheetListController = this; // Make it accessible globally for demo
+      }
+      
+      addSheet(contentHtml) {
+        const sheetElement = this.createSheetElement(contentHtml);
+        this.containerTarget.appendChild(sheetElement);
+        this.sheets.push(sheetElement);
+        
+        sheetElement.addEventListener("sheet:closed", () => {
+          this.removeSheet(sheetElement);
+        });
+      }
+      
+      createSheetElement(contentHtml) {
+        const sheetContainer = document.createElement("div");
+        sheetContainer.className = "sheet-container";
+        sheetContainer.setAttribute("data-controller", "sheet");
+        
+        sheetContainer.innerHTML = `
+          <div class="sheet-overlay" data-sheet-target="overlay" data-action="click->sheet#close"></div>
+          <div class="sheet" data-sheet-target="sheet">
+            <div class="sheet-content" data-sheet-target="content">
+              ${contentHtml}
+            </div>
+          </div>
+        `;
+        
+        return sheetContainer;
+      }
+      
+      removeSheet(sheetElement) {
+        const index = this.sheets.indexOf(sheetElement);
+        if (index > -1) {
+          this.sheets.splice(index, 1);
+        }
+        
+        if (this.sheets.length > 0) {
+          const previousSheet = this.sheets[this.sheets.length - 1];
+          const sheetDiv = previousSheet.querySelector(".sheet");
+          if (sheetDiv) {
+            sheetDiv.style.transform = "translate(0px, 0px)";
+          }
+        }
+      }
+    }
+    
+    // Initialize Stimulus application
+    const application = Application.start();
+    application.register("sheet", SheetController);
+    application.register("sheet-list", SheetListController);
+  </script>
+
+  <script>
+    // Demo helper functions
+    function openSimpleSheet() {
+      const content = `
+        <div class="sheet-demo-content">
+          <h2>Simple Sheet</h2>
+          <p>This is a simple sheet with some content.</p>
+          <button data-action="click->sheet#close">Close</button>
+        </div>
+      `;
+      window.sheetListController.addSheet(content);
+    }
+    
+    function openFormSheet() {
+      const content = `
+        <div class="sheet-demo-content">
+          <h2>Form Sheet</h2>
+          <form>
+            <div style="margin-bottom: 15px;">
+              <label>Name:</label><br>
+              <input type="text" style="width: 100%; padding: 8px; margin-top: 5px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+              <label>Email:</label><br>
+              <input type="email" style="width: 100%; padding: 8px; margin-top: 5px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+              <label>Message:</label><br>
+              <textarea style="width: 100%; padding: 8px; margin-top: 5px; height: 100px;"></textarea>
+            </div>
+            <button type="button" data-action="click->sheet#close">Close</button>
+          </form>
+        </div>
+      `;
+      window.sheetListController.addSheet(content);
+    }
+    
+    function openNestedSheet() {
+      const content = `
+        <div class="sheet-demo-content">
+          <h2>Nested Sheet Example</h2>
+          <p>This sheet demonstrates nested sheets. Click the button below to open another sheet on top of this one.</p>
+          <button onclick="openSimpleSheet()">Open Another Sheet</button>
+          <button data-action="click->sheet#close" style="margin-left: 10px;">Close This Sheet</button>
+        </div>
+      `;
+      window.sheetListController.addSheet(content);
+    }
+  </script>
+</body>
+</html>

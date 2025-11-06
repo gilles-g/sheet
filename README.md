@@ -1,123 +1,224 @@
-# ng2-sheet
+# stimulus-sheet
 
-[![NPM Version](https://img.shields.io/npm/v/ng2-sheet.svg)](https://www.npmjs.com/package/ng2-sheet)
-[![NPM Downloads](https://img.shields.io/npm/dt/ng2-sheet.svg)](https://www.npmjs.com/package/ng2-sheet)
+A Stimulus-based sheet/drawer component that slides in from the right side of the screen.
 
 ## Features
 
 - Open a nice sheet from the right
-- Choose and add a component to insert inside the sheet
-- You can choose and add an other component to insert on a new sheet over the opened sheet
-- You can do this indefinitely
-
-This component works perfectly with Redux implementation like ngrx-store.
-
-## Example
-
-Old demo https://embed.plnkr.co/w0IzEGmMDmyN5TbuRXer/
+- Stack multiple sheets on top of each other
+- Smooth animations using CSS transitions
+- Responsive design
+- Works with any HTML content
 
 ## Installation
 
-###### NPM 5
-`npm install ng2-sheet`
-
-###### yarn
-`yarn add ng2-sheet`
-
-Finally import the `SheetModule`.
-
-How use sheet list
-==================
-
-Add this code on the page where you will need a sheet list 
-```
-<ng-template #sheetListContainer></ng-template>
+### NPM
+```bash
+npm install stimulus-sheet @hotwired/stimulus
 ```
 
-On your component, init variables
-```
-sheetList: SheetListComponent; // will be the component created
-@ViewChild('sheetListContainer', {read: ViewContainerRef}) sheetListContainer; // will be the container where insert the component
+### Yarn
+```bash
+yarn add stimulus-sheet @hotwired/stimulus
 ```
 
-Then init the sheet list and save the reference
-You can also subscribe on ouput to be notified when a component is created on a sheet
-```
-private sheetListInit() {
-    this.sheetListService.init(this.sheetListContainer);
-    this.sheetList = this.sheetListService.getComponent();
+## Setup
 
-    this.sheetList.onComponentCreated.subscribe(
-      (params) => {
-        this.componentCreated(params);
-      }
-    )
+First, import the CSS in your application:
+
+```css
+@import 'stimulus-sheet/dist/sheet.css';
+```
+
+Then register the controllers with your Stimulus application:
+
+```javascript
+import { Application } from "@hotwired/stimulus";
+import { SheetController, SheetListController } from "stimulus-sheet";
+
+const application = Application.start();
+application.register("sheet", SheetController);
+application.register("sheet-list", SheetListController);
+```
+
+## Usage
+
+### Basic Setup
+
+Add the sheet list container to your HTML:
+
+```html
+<div class="sheet-holder" data-controller="sheet-list">
+  <div data-sheet-list-target="container"></div>
+</div>
+```
+
+### Opening a Sheet
+
+To open a sheet with custom content, use JavaScript:
+
+```javascript
+// Get the sheet list controller
+const sheetListElement = document.querySelector('[data-controller="sheet-list"]');
+const sheetList = this.application.getControllerForElementAndIdentifier(
+  sheetListElement, 
+  "sheet-list"
+);
+
+// Add a sheet with your content
+const content = `
+  <div class="sheet-header">
+    <h2>My Sheet Title</h2>
+    <button data-action="click->sheet#close">Close</button>
+  </div>
+  <div class="sheet-scrollpane">
+    <div class="sheet-content">
+      <p>Your content here...</p>
+    </div>
+  </div>
+`;
+
+sheetList.addSheet(content);
+```
+
+### Loading Content Asynchronously
+
+You can load content from a URL using the `addSheetFromUrl` method:
+
+```javascript
+const sheetListElement = document.querySelector('[data-controller="sheet-list"]');
+const sheetList = application.getControllerForElementAndIdentifier(
+  sheetListElement, 
+  "sheet-list"
+);
+
+// Load sheet content from a URL
+await sheetList.addSheetFromUrl('/api/sheets/user-form');
+```
+
+This is especially useful when working with server-side rendering, Turbo, or API endpoints.
+
+### Simplified API
+
+For easier access, you can create a helper function:
+
+```javascript
+export function openSheet(content) {
+  const sheetListElement = document.querySelector('[data-controller="sheet-list"]');
+  if (sheetListElement && sheetListElement.dataset.sheetListController) {
+    const controller = sheetListElement.dataset.sheetListController;
+    controller.addSheet(content);
   }
+}
+
+// Usage
+openSheet('<div class="sheet-content"><h1>Hello!</h1></div>');
 ```
 
-Example for create a TestComponent inside a sheet
+### Closing a Sheet
 
-```
-createTest() {
-    const inputParams = {
-      model: this.model,
-    };
+Sheets can be closed by:
+1. Clicking the overlay
+2. Calling the close action: `data-action="click->sheet#close"`
+3. Programmatically via the controller
 
-    this.sheetList.addSheet(TestComponent, 'TestComponent', inputParams);
-  }
-```
-Don't forget to add your component into the entryComponents entry of your module:
-
-```
-@NgModule({
- ...,
- entryComponents: [TestComponent]
-})
+```html
+<button data-action="click->sheet#close">Close</button>
 ```
 
-Now you can subscribe to the output
+### Stacking Multiple Sheets
 
-```
-componentCreated(params) {
-    const component = params.cmp;
-    const name = params.name;
+You can open multiple sheets on top of each other. Each new sheet will slide in from the right and stack on top of the previous one.
 
-    if (name === 'TestComponent') {
-      (<TestComponent>component.instance).someValues$
-        .subscribe(
-          (value) => {
-            this.testValues.push(value);
-          }
-        )
-    }
-  }
-```
+## Styling
 
-Advanced use case
-=================
+The component comes with default styles, but you can customize them by overriding the CSS variables or classes:
 
-In your TestComponent, you want to have a reference to the sheetList. You can inject the SheetListService 
-and call getComponent()
+```css
+.sheet {
+  background: #ffffff; /* Change background color */
+}
 
-```
-  sheetList: SheetListComponent;
-
-  constructor(
-    private sheetListService: SheetListService
-  ) {
-    this.sheetList = this.sheetListService.getComponent();
-  }
+.sheet-overlay {
+  background: rgba(0, 0, 0, 0.5); /* Change overlay opacity */
+}
 ```
 
-If you want to open a new sheet with OtherTestComponent from the TestComponent, you have just to do that
+## Browser Support
 
+This component works in all modern browsers that support:
+- CSS Transitions
+- ES2017
+- Stimulus 3.x
+
+## Documentation
+
+### 📚 Guides & Examples
+
+- **[CodePen Demo](docs/CODEPEN_DEMO.md)** - Try it online with interactive examples
+- **[Vite Integration](docs/VITE_INTEGRATION.md)** - Setup with Vite and Turbo
+- **[Symfony Integration](docs/SYMFONY_INTEGRATION.md)** - Complete Symfony guide with forms, controllers, and Turbo Streams
+- **[Migration Guide](MIGRATION.md)** - Migrate from ng2-sheet (Angular) to stimulus-sheet
+
+### 🚀 Quick Start Examples
+
+**Basic HTML:**
+```html
+<button onclick="openMySheet()">Open Sheet</button>
+
+<script>
+function openMySheet() {
+  const sheetList = document.querySelector('[data-controller="sheet-list"]');
+  const controller = application.getControllerForElementAndIdentifier(sheetList, 'sheet-list');
+  controller.addSheet('<div class="sheet-content"><h1>Hello!</h1></div>');
+}
+</script>
 ```
-showOther() {
-    this.sheetList.addSheet(OtherTestComponent, 'OtherTestComponent');
-  }
+
+**With Turbo (Async Loading):**
+```javascript
+// Load form from server
+await sheetList.addSheetFromUrl('/forms/user-edit');
+
+// Server responds with HTML that includes Turbo Frame
+// Form submissions can use Turbo Streams to close the sheet
 ```
 
+**Symfony Example:**
+```php
+// Controller
+#[Route('/users/create-sheet')]
+public function createSheet(Request $request): Response {
+    $form = $this->createForm(UserType::class, new User());
+    return $this->render('user/_form_sheet.html.twig', ['form' => $form]);
+}
+```
 
-###### @TODO
+See the [docs](docs/) folder for complete examples.
 
-- Replace jQuery with Angular animations
+## Migration from ng2-sheet
+
+If you're migrating from the Angular version (ng2-sheet), see the detailed [Migration Guide](MIGRATION.md).
+
+**Key differences:**
+- Framework-agnostic (no Angular required)
+- Smaller bundle size (~500KB → ~5KB)
+- Simpler API with data attributes
+- No jQuery dependency
+- Works with Turbo, HTMX, or vanilla JS
+
+## Security
+
+**Important:** The `addSheet()` method accepts raw HTML. Ensure content is from a trusted source or properly sanitized. For dynamic content, use `addSheetFromUrl()` to load from your server.
+
+For user-generated content, use a sanitization library like [DOMPurify](https://github.com/cure53/DOMPurify):
+
+```javascript
+import DOMPurify from 'dompurify';
+const clean = DOMPurify.sanitize(userContent);
+sheetList.addSheet(clean);
+```
+
+## License
+
+MIT
