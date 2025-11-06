@@ -38,14 +38,15 @@ jobs:
         tools: composer:v2
         coverage: none
 
-    - name: Install ChromeDriver
-      uses: nanasess/setup-chromedriver@v2
+    - name: Install Chrome
+      uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: stable
 
-    - name: Start Chrome
+    - name: Start Xvfb
       run: |
-        export DISPLAY=:99
-        chromedriver --url-base=/wd/hub &
-        sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+        Xvfb :0 -screen 0 1920x1080x24 &
+        echo "DISPLAY=:0" >> $GITHUB_ENV
 
     - name: Get Composer Cache Directory
       id: composer-cache
