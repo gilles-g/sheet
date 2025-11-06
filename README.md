@@ -158,6 +158,7 @@ This component works in all modern browsers that support:
 - **[CodePen Demo](docs/CODEPEN_DEMO.md)** - Try it online with interactive examples
 - **[Vite Integration](docs/VITE_INTEGRATION.md)** - Setup with Vite and Turbo
 - **[Symfony Integration](docs/SYMFONY_INTEGRATION.md)** - Complete Symfony guide with forms, controllers, and Turbo Streams
+- **[Symfony Docker Demo](examples/symfony/README.md)** - 🐳 Complete working Symfony app with Docker and MariaDB - clone and run!
 - **[Migration Guide](MIGRATION.md)** - Migrate from ng2-sheet (Angular) to stimulus-sheet
 
 ### 🚀 Quick Start Examples

@@ -527,4 +527,13 @@ framework:
 
 ## Complete Working Example
 
-See the example Symfony project in the `examples/symfony` directory for a complete working implementation.
+See the example Symfony project in the `examples/symfony` directory for a complete working implementation with Docker and MariaDB.
+
+**[📖 View the Symfony Docker Demo](../examples/symfony/README.md)**
+
+The demo includes:
+- Complete Symfony 7.1 application
+- Docker Compose setup with PHP, Nginx, and MariaDB
+- User CRUD with stimulus-sheet integration
+- Form validation and Turbo Streams
+- One-command setup with `docker compose up`

@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users - Stimulus Sheet Demo{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>User Management</h1>
+            <button 
+                data-controller="sheet-opener"
+                data-action="click->sheet-opener#open"
+                data-sheet-opener-url-value="{{ path('user_create_sheet') }}"
+                class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New User
+            </button>
+        </div>
+
+        {% if users is empty %}
+            <div class="alert alert-info">
+                No users found. Click "Create New User" to add your first user!
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-hover" id="user-list">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    <button 
+                                        data-controller="sheet-opener"
+                                        data-action="click->sheet-opener#open"
+                                        data-sheet-opener-url-value="{{ path('user_edit_sheet', {id: user.id}) }}"
+                                        class="btn btn-sm btn-primary">
+                                        Edit
+                                    </button>
+                                    <form method="post" action="{{ path('user_delete', {id: user.id}) }}" style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-danger" 
+                                                onclick="return confirm('Are you sure you want to delete this user?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h3>About This Demo</h3>
+        </div>
+        <div class="card-body">
+            <p>This is a demonstration of the <strong>stimulus-sheet</strong> component integrated with Symfony.</p>
+            <p>Features demonstrated:</p>
+            <ul>
+                <li>Symfony 7.1 with Doctrine ORM</li>
+                <li>MariaDB database</li>
+                <li>Docker containerization</li>
+                <li>Stimulus controllers for interactive sheets</li>
+                <li>Form handling with validation</li>
+                <li>CRUD operations</li>
+            </ul>
+            <p>Click "Create New User" or "Edit" to see the sheet component in action!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

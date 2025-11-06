@@ -1,0 +1,27 @@
+{# Close the sheet after successful submission #}
+<script>
+    // Find and close the active sheet
+    const sheets = document.querySelectorAll('[data-controller*="sheet"]');
+    if (sheets.length > 0) {
+        const lastSheet = sheets[sheets.length - 1];
+        const closeBtn = lastSheet.querySelector('[data-action*="sheet#close"]');
+        if (closeBtn) {
+            closeBtn.click();
+        }
+    }
+    
+    // Show success notification and reload page
+    setTimeout(() => {
+        // Create a temporary success notification
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
+        notification.style.zIndex = '9999';
+        notification.textContent = 'User {{ action }} successfully!';
+        document.body.appendChild(notification);
+        
+        // Reload after a short delay to show the notification
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }, 300);
+</script>
