@@ -1,0 +1,13 @@
+<script>
+    // Close the sheet after successful submission
+    const sheets = document.querySelectorAll('[data-controller*="sheet"]');
+    if (sheets.length > 0) {
+        const lastSheet = sheets[sheets.length - 1];
+        const closeBtn = lastSheet.querySelector('[data-action*="sheet#close"]');
+        if (closeBtn) {
+            closeBtn.click();
+        }
+    }
+    // Reload the page to show the updated list
+    window.location.reload();
+</script>
