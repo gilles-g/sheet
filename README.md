@@ -81,6 +81,23 @@ const content = `
 sheetList.addSheet(content);
 ```
 
+### Loading Content Asynchronously
+
+You can load content from a URL using the `addSheetFromUrl` method:
+
+```javascript
+const sheetListElement = document.querySelector('[data-controller="sheet-list"]');
+const sheetList = application.getControllerForElementAndIdentifier(
+  sheetListElement, 
+  "sheet-list"
+);
+
+// Load sheet content from a URL
+await sheetList.addSheetFromUrl('/api/sheets/user-form');
+```
+
+This is especially useful when working with server-side rendering, Turbo, or API endpoints.
+
 ### Simplified API
 
 For easier access, you can create a helper function:
@@ -134,14 +151,73 @@ This component works in all modern browsers that support:
 - ES2017
 - Stimulus 3.x
 
+## Documentation
+
+### 📚 Guides & Examples
+
+- **[CodePen Demo](docs/CODEPEN_DEMO.md)** - Try it online with interactive examples
+- **[Vite Integration](docs/VITE_INTEGRATION.md)** - Setup with Vite and Turbo
+- **[Symfony Integration](docs/SYMFONY_INTEGRATION.md)** - Complete Symfony guide with forms, controllers, and Turbo Streams
+- **[Migration Guide](MIGRATION.md)** - Migrate from ng2-sheet (Angular) to stimulus-sheet
+
+### 🚀 Quick Start Examples
+
+**Basic HTML:**
+```html
+<button onclick="openMySheet()">Open Sheet</button>
+
+<script>
+function openMySheet() {
+  const sheetList = document.querySelector('[data-controller="sheet-list"]');
+  const controller = application.getControllerForElementAndIdentifier(sheetList, 'sheet-list');
+  controller.addSheet('<div class="sheet-content"><h1>Hello!</h1></div>');
+}
+</script>
+```
+
+**With Turbo (Async Loading):**
+```javascript
+// Load form from server
+await sheetList.addSheetFromUrl('/forms/user-edit');
+
+// Server responds with HTML that includes Turbo Frame
+// Form submissions can use Turbo Streams to close the sheet
+```
+
+**Symfony Example:**
+```php
+// Controller
+#[Route('/users/create-sheet')]
+public function createSheet(Request $request): Response {
+    $form = $this->createForm(UserType::class, new User());
+    return $this->render('user/_form_sheet.html.twig', ['form' => $form]);
+}
+```
+
+See the [docs](docs/) folder for complete examples.
+
 ## Migration from ng2-sheet
 
-If you're migrating from the Angular version (ng2-sheet), the main concepts remain the same but the implementation is simpler:
+If you're migrating from the Angular version (ng2-sheet), see the detailed [Migration Guide](MIGRATION.md).
 
-- No need for dependency injection or services
-- Use standard HTML data attributes instead of Angular directives
-- Controllers are automatically instantiated by Stimulus
-- Events are handled through Stimulus actions
+**Key differences:**
+- Framework-agnostic (no Angular required)
+- Smaller bundle size (~500KB → ~5KB)
+- Simpler API with data attributes
+- No jQuery dependency
+- Works with Turbo, HTMX, or vanilla JS
+
+## Security
+
+**Important:** The `addSheet()` method accepts raw HTML. Ensure content is from a trusted source or properly sanitized. For dynamic content, use `addSheetFromUrl()` to load from your server.
+
+For user-generated content, use a sanitization library like [DOMPurify](https://github.com/cure53/DOMPurify):
+
+```javascript
+import DOMPurify from 'dompurify';
+const clean = DOMPurify.sanitize(userContent);
+sheetList.addSheet(clean);
+```
 
 ## License
 

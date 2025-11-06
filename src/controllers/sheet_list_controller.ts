@@ -14,6 +14,15 @@ export default class SheetListController extends Controller {
     // Cleanup
   }
 
+  /**
+   * Add a new sheet with the provided HTML content.
+   * 
+   * SECURITY WARNING: This method accepts raw HTML and inserts it into the DOM.
+   * Ensure the content is from a trusted source or properly sanitized before calling this method.
+   * For user-generated content, use a sanitization library like DOMPurify.
+   * 
+   * @param contentHtml - Trusted HTML content to display in the sheet
+   */
   addSheet(contentHtml: string) {
     const sheetElement = this.createSheetElement(contentHtml);
     this.containerTarget.appendChild(sheetElement);
@@ -23,6 +32,26 @@ export default class SheetListController extends Controller {
     sheetElement.addEventListener("sheet:closed", () => {
       this.removeSheet(sheetElement);
     });
+  }
+
+  /**
+   * Add a sheet by loading content from a URL (safe alternative to addSheet).
+   * This is the recommended approach when loading dynamic content.
+   * 
+   * @param url - URL to fetch content from
+   */
+  async addSheetFromUrl(url: string) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const html = await response.text();
+      this.addSheet(html);
+    } catch (error) {
+      console.error('Failed to load sheet content:', error);
+      throw error;
+    }
   }
 
   private createSheetElement(contentHtml: string): HTMLElement {
