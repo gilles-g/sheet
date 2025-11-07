@@ -10,7 +10,8 @@
     "build": "rollup -c && npm run copy-css",
     "copy-css": "cp src/sheet.css dist/sheet.css",
     "dev": "rollup -c -w",
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "echo \"No tests yet\" && exit 0",
+    "prepare": "npm run build"
   },
   "files": [
     "dist",

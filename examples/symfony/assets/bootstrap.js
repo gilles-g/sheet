@@ -1,5 +1,5 @@
 import { startStimulusApp } from '@symfony/stimulus-bridge';
-import { SheetController, SheetListController } from '../vendor/stimulus-sheet/dist/index.esm.js';
+import { SheetController, SheetListController } from 'stimulus-sheet';
 
 // Registers Stimulus controllers from controllers.json and in the controllers/ directory
 export const app = startStimulusApp(require.context(

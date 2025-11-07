@@ -1,6 +1,0 @@
-/* Import stimulus-sheet CSS */
-@import '~stimulus-sheet/dist/sheet.css';
-
-body {
-    background-color: lightgray;
-}

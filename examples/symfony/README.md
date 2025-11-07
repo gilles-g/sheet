@@ -45,8 +45,14 @@ This will start three services:
 If dependencies weren't installed during build:
 
 ```bash
+# Install PHP dependencies
 docker compose exec php composer install
+
+# Install Node dependencies (stimulus-sheet is installed from GitHub)
+docker compose exec php npm install
 ```
+
+**Note**: The `stimulus-sheet` package is installed directly from GitHub. The package.json references `github:gilles-g/sheet` which automatically pulls the latest version from the repository.
 
 ### 4. Create the database and run migrations
 

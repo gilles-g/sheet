@@ -12,14 +12,19 @@ A Stimulus-based sheet/drawer component that slides in from the right side of th
 
 ## Installation
 
-### NPM
+### NPM (from GitHub)
 ```bash
-npm install stimulus-sheet @hotwired/stimulus
+npm install github:gilles-g/sheet @hotwired/stimulus
 ```
 
-### Yarn
+To use a specific version:
 ```bash
-yarn add stimulus-sheet @hotwired/stimulus
+npm install github:gilles-g/sheet#v2.0.0 @hotwired/stimulus
+```
+
+### Yarn (from GitHub)
+```bash
+yarn add github:gilles-g/sheet @hotwired/stimulus
 ```
 
 ## Setup
