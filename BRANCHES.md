@@ -41,6 +41,34 @@ The legacy branch will contain the Angular-based implementation (v1.x). This bra
 - `ng2-sheet@1.x` - Legacy Angular version
 - `stimulus-sheet@2.x` - New Stimulus version (recommended)
 
+### Creating Releases
+
+To create a new release and publish to npm:
+
+1. Update the version in `package.json`:
+   ```bash
+   npm version patch  # for bug fixes
+   npm version minor  # for new features
+   npm version major  # for breaking changes
+   ```
+
+2. Push the tag to GitHub:
+   ```bash
+   git push --follow-tags
+   ```
+
+3. The GitHub Actions workflow will automatically:
+   - Build the package
+   - Create a GitHub release
+   - Publish to npm registry
+
+**Note**: You need to set the `NPM_TOKEN` secret in GitHub repository settings for automated npm publishing.
+
+To set up the npm token:
+1. Log in to npm: `npm login`
+2. Generate an automation token: https://www.npmjs.com/settings/[username]/tokens
+3. Add the token as `NPM_TOKEN` in GitHub repository secrets
+
 ## For Repository Maintainers
 
 To complete the branch restructure:
