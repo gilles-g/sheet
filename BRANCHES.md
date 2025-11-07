@@ -41,9 +41,33 @@ The legacy branch will contain the Angular-based implementation (v1.x). This bra
 - `ng2-sheet@1.x` - Legacy Angular version
 - `stimulus-sheet@2.x` - New Stimulus version (recommended)
 
+### Installing from GitHub
+
+This package is distributed via GitHub releases. To install it in your project:
+
+```bash
+npm install github:gilles-g/sheet
+```
+
+Or to use a specific version/tag:
+
+```bash
+npm install github:gilles-g/sheet#v2.0.0
+```
+
+Add to your `package.json`:
+
+```json
+{
+  "dependencies": {
+    "stimulus-sheet": "github:gilles-g/sheet"
+  }
+}
+```
+
 ### Creating Releases
 
-To create a new release and publish to npm:
+To create a new release:
 
 1. Update the version in `package.json`:
    ```bash
@@ -59,15 +83,13 @@ To create a new release and publish to npm:
 
 3. The GitHub Actions workflow will automatically:
    - Build the package
-   - Create a GitHub release
-   - Publish to npm registry
+   - Create a GitHub release with release notes
 
-**Note**: You need to set the `NPM_TOKEN` secret in GitHub repository settings for automated npm publishing.
-
-To set up the npm token:
-1. Log in to npm: `npm login`
-2. Generate an automation token: https://www.npmjs.com/settings/[username]/tokens
-3. Add the token as `NPM_TOKEN` in GitHub repository secrets
+Users can then install the package using:
+```bash
+npm install github:gilles-g/sheet#v2.0.1  # specific version
+npm install github:gilles-g/sheet         # latest from main branch
+```
 
 ## For Repository Maintainers
 
