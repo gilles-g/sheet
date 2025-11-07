@@ -71,12 +71,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: examples/symfony/package-lock.json
 
     - name: Install NPM dependencies
       working-directory: examples/symfony
-      run: npm ci
+      run: npm install
 
     - name: Build assets
       working-directory: examples/symfony
