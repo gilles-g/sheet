@@ -74,6 +74,9 @@ jobs:
         cache: 'npm'
         cache-dependency-path: examples/symfony/package-lock.json
 
+    - name: Configure Git for private repo access
+      run: git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
     - name: Install NPM dependencies
       working-directory: examples/symfony
       run: npm ci

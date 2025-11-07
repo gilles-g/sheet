@@ -23,6 +23,6 @@
         "@hotwired/turbo": "^8.0.20",
         "@symfony/stimulus-bridge": "^4.0.1",
         "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
-        "stimulus-sheet": "github:gilles-g/sheet"
+        "stimulus-sheet": "git+https://github.com/gilles-g/sheet.git"
     }
 }
