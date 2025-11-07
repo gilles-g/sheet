@@ -6,7 +6,6 @@
 /public/bundles/
 /var/
 /vendor/
-!/vendor/stimulus-sheet/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
