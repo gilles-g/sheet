@@ -131,10 +131,16 @@ jobs:
         echo "=== Verifying test environment ==="
         cat .env.test.local
         echo "=== Starting PHP server ==="
-        APP_ENV=test php -S 127.0.0.1:9080 public/index.php &
-        sleep 2
-        echo "Web server started on http://127.0.0.1:9080"
-        curl -I http://127.0.0.1:9080 || echo "Server not responding"
+        APP_ENV=test php -S 127.0.0.1:9080 public/index.php > server.log 2>&1 &
+        SERVER_PID=$!
+        sleep 3
+        echo "Web server started on http://127.0.0.1:9080 (PID: $SERVER_PID)"
+        echo "=== Testing server response ==="
+        curl -v http://127.0.0.1:9080 || echo "Server not responding"
+        echo "=== Server logs ==="
+        cat server.log || echo "No server log file"
+        echo "=== Symfony logs ==="
+        cat var/log/test.log || echo "No Symfony test log found"
 
     - name: Run Panther tests
       working-directory: examples/symfony
@@ -143,3 +149,19 @@ jobs:
         PANTHER_NO_HEADLESS: 0
         PANTHER_CHROME_ARGUMENTS: "--disable-dev-shm-usage --no-sandbox"
         PANTHER_EXTERNAL_BASE_URI: "http://127.0.0.1:9080"
+
+    - name: Show logs on failure
+      if: failure()
+      working-directory: examples/symfony
+      run: |
+        echo "=== PHP Server logs ==="
+        cat server.log || echo "No server.log file"
+        echo ""
+        echo "=== Symfony test.log ==="
+        cat var/log/test.log || echo "No test.log file"
+        echo ""
+        echo "=== Symfony dev.log ==="
+        cat var/log/dev.log || echo "No dev.log file"
+        echo ""
+        echo "=== All log files ==="
+        find var/log -type f -exec echo "File: {}" \; -exec cat {} \; 2>/dev/null || echo "No log directory"
