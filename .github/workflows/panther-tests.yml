@@ -130,8 +130,11 @@ jobs:
       run: |
         echo "=== Verifying test environment ==="
         cat .env.test.local
-        echo "=== Starting PHP server ==="
-        APP_ENV=test php -S 127.0.0.1:9080 public/index.php > server.log 2>&1 &
+        echo "=== Starting PHP server with SQLite ==="
+        # Export DATABASE_URL explicitly to ensure PHP server uses SQLite
+        export APP_ENV=test
+        export DATABASE_URL="sqlite:///%kernel.project_dir%/var/test.db"
+        php -S 127.0.0.1:9080 public/index.php > server.log 2>&1 &
         SERVER_PID=$!
         sleep 3
         echo "Web server started on http://127.0.0.1:9080 (PID: $SERVER_PID)"
@@ -149,6 +152,8 @@ jobs:
         PANTHER_NO_HEADLESS: 0
         PANTHER_CHROME_ARGUMENTS: "--disable-dev-shm-usage --no-sandbox"
         PANTHER_EXTERNAL_BASE_URI: "http://127.0.0.1:9080"
+        APP_ENV: test
+        DATABASE_URL: "sqlite:///%kernel.project_dir%/var/test.db"
 
     - name: Show logs on failure
       if: failure()
