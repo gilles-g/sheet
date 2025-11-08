@@ -112,6 +112,17 @@ jobs:
         PANTHER_APP_ENV=test
         EOF
 
+    - name: Wait for database to be ready
+      run: |
+        for i in {1..30}; do
+          if mysqladmin ping -h 127.0.0.1 -P 3306 -u app -ptest --silent; then
+            echo "Database is ready!"
+            break
+          fi
+          echo "Waiting for database... ($i/30)"
+          sleep 2
+        done
+
     - name: Create database schema
       working-directory: examples/symfony
       run: |
