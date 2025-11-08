@@ -42,7 +42,7 @@
 
     <extensions>
         <bootstrap class="Symfony\Component\Panther\ServerExtension">
-            <parameter name="webServerDir">public</parameter>
+            <parameter name="webServerDir" value="public" />
         </bootstrap>
     </extensions>
 </phpunit>
