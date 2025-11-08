@@ -27,6 +27,8 @@ docker compose up -d
 
 Then visit: http://localhost:8000
 
+**Installation Method:** This example uses GitHub installation by default. For local/offline installation using the zip file, see the [Local Installation Guide](../docs/LOCAL_INSTALLATION.md).
+
 **[📖 Read the full documentation →](./symfony/README.md)**
 
 ---

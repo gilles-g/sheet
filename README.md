@@ -171,6 +171,8 @@ This component works in all modern browsers that support:
 
 ### 📚 Guides & Examples
 
+- **[Local Installation Guide](docs/LOCAL_INSTALLATION.md)** - 📦 Install from zip file for offline/corporate environments
+- **[Zip Quick Start](docs/ZIP_QUICK_START.md)** - ⚡ Quick reference for using the zip distribution
 - **[CodePen Demo](docs/CODEPEN_DEMO.md)** - Try it online with interactive examples
 - **[Vite Integration](docs/VITE_INTEGRATION.md)** - Setup with Vite and Turbo
 - **[Symfony Integration](docs/SYMFONY_INTEGRATION.md)** - Complete Symfony guide with forms, controllers, and Turbo Streams
