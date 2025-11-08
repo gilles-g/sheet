@@ -108,10 +108,26 @@ jobs:
       run: |
         php bin/console cache:clear --env=test --no-interaction
         php bin/console cache:warmup --env=test --no-interaction
+        
+    - name: Debug - Check environment
+      working-directory: examples/symfony
+      run: |
+        echo "=== Environment Variables ==="
+        env | grep PANTHER || true
+        echo "=== PHP Version ==="
+        php -v
+        echo "=== Symfony Version ==="
+        php bin/console --version
+        echo "=== Public directory ==="
+        ls -la public/
+        echo "=== Test database ==="
+        ls -la var/test.db || echo "Database not found"
 
     - name: Run Panther tests
       working-directory: examples/symfony
-      run: php bin/phpunit tests/SheetTest.php --testdox
+      run: php bin/phpunit tests/SheetTest.php --testdox --verbose
       env:
         PANTHER_NO_HEADLESS: 0
         PANTHER_CHROME_ARGUMENTS: "--disable-dev-shm-usage --no-sandbox"
+        PANTHER_WEB_SERVER_ROUTER: public/index.php
+        PANTHER_EXTERNAL_BASE_URI: ""

@@ -16,6 +16,7 @@
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="PANTHER_WEB_SERVER_PORT" value="9080" />
+        <server name="PANTHER_WEB_SERVER_DIR" value="public" />
     </php>
 
     <testsuites>
