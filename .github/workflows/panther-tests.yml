@@ -71,15 +71,33 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: examples/symfony/package-lock.json
 
-    - name: Configure Git for private repo access
-      run: git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+    - name: Build stimulus-sheet distribution
+      run: |
+        npm ci
+        npm run create-zip
+
+    - name: Install stimulus-sheet from local zip
+      working-directory: examples/symfony
+      run: |
+        # Extract the zip distribution
+        unzip ../../stimulus-sheet-*.zip
+        
+        # Update package.json to use local package
+        node -e "
+        const fs = require('fs');
+        const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+        pkg.dependencies['stimulus-sheet'] = 'file:./package';
+        fs.writeFileSync('package.json', JSON.stringify(pkg, null, 4));
+        "
+        
+        # Show the updated dependency
+        echo "Updated stimulus-sheet dependency:"
+        grep -A1 "stimulus-sheet" package.json
 
     - name: Install NPM dependencies
       working-directory: examples/symfony
-      run: npm ci
+      run: npm install
 
     - name: Build assets
       working-directory: examples/symfony
