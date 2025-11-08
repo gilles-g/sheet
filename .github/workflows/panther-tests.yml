@@ -126,7 +126,7 @@ jobs:
     - name: Create database schema
       working-directory: examples/symfony
       run: |
-        php bin/console doctrine:database:create --env=test --no-interaction
+        # Database already exists from MySQL service, just run migrations
         php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
     - name: Run Panther tests
