@@ -92,8 +92,9 @@ jobs:
       run: |
         cat > .env.test.local << EOF
         DATABASE_URL="sqlite:///%kernel.project_dir%/var/test.db"
-        PANTHER_WEB_SERVER_DIR=public
         PANTHER_APP_ENV=test
+        PANTHER_WEB_SERVER_DIR=public
+        PANTHER_ERROR_SCREENSHOT_DIR=./var/error-screenshots
         EOF
 
     - name: Create database schema
@@ -101,7 +102,16 @@ jobs:
       run: |
         php bin/console doctrine:database:create --env=test --no-interaction
         php bin/console doctrine:schema:update --force --env=test --no-interaction
+        
+    - name: Warm up cache for test environment
+      working-directory: examples/symfony
+      run: |
+        php bin/console cache:clear --env=test --no-interaction
+        php bin/console cache:warmup --env=test --no-interaction
 
     - name: Run Panther tests
       working-directory: examples/symfony
       run: php bin/phpunit tests/SheetTest.php --testdox
+      env:
+        PANTHER_NO_HEADLESS: 0
+        PANTHER_CHROME_ARGUMENTS: "--disable-dev-shm-usage --no-sandbox"
