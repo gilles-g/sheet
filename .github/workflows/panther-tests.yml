@@ -126,9 +126,10 @@ jobs:
     - name: Start Symfony web server
       working-directory: examples/symfony
       run: |
-        php -S 127.0.0.1:9080 -t public &
+        php -S 127.0.0.1:9080 public/index.php &
         sleep 2
         echo "Web server started on http://127.0.0.1:9080"
+        curl -I http://127.0.0.1:9080 || echo "Server not responding"
 
     - name: Run Panther tests
       working-directory: examples/symfony
