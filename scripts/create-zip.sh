@@ -19,7 +19,6 @@ mkdir -p "${PACKAGE_DIR}"
 # Copy necessary files
 echo "Copying files..."
 cp -r dist "${PACKAGE_DIR}/"
-cp package.json "${PACKAGE_DIR}/"
 cp README.md "${PACKAGE_DIR}/"
 cp MIGRATION.md "${PACKAGE_DIR}/"
 cp BRANCHES.md "${PACKAGE_DIR}/"
@@ -29,6 +28,39 @@ cp SECURITY.md "${PACKAGE_DIR}/"
 if [ -d "docs" ]; then
   cp -r docs "${PACKAGE_DIR}/"
 fi
+
+# Create a modified package.json without build scripts (since it's pre-built)
+echo "Creating modified package.json..."
+node -e "
+const fs = require('fs');
+const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+
+// Remove build-related scripts since this is a pre-built package
+delete pkg.scripts.build;
+delete pkg.scripts['copy-css'];
+delete pkg.scripts.dev;
+delete pkg.scripts.prepare;
+delete pkg.scripts['create-zip'];
+
+// Keep only test script
+pkg.scripts = { test: pkg.scripts.test };
+
+// Remove devDependencies since they're not needed for pre-built package
+delete pkg.devDependencies;
+
+// Add exports field for better ES module resolution
+pkg.exports = {
+  '.': {
+    'import': './dist/index.esm.js',
+    'require': './dist/index.js',
+    'types': './dist/index.d.ts'
+  },
+  './dist/sheet.css': './dist/sheet.css',
+  './package.json': './package.json'
+};
+
+fs.writeFileSync('${PACKAGE_DIR}/package.json', JSON.stringify(pkg, null, 2));
+"
 
 # Create the zip file
 echo "Creating zip archive..."
