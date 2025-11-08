@@ -100,7 +100,7 @@ jobs:
       working-directory: examples/symfony
       run: |
         php bin/console doctrine:database:create --env=test --no-interaction
-        php bin/console doctrine:migrations:migrate --env=test --no-interaction
+        php bin/console doctrine:schema:update --force --env=test --no-interaction
 
     - name: Run Panther tests
       working-directory: examples/symfony
