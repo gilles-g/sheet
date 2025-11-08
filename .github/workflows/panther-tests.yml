@@ -90,12 +90,14 @@ jobs:
     - name: Create .env.test.local file
       working-directory: examples/symfony
       run: |
-        cat > .env.test.local << EOF
+        cat > .env.test.local << 'EOF'
         DATABASE_URL="sqlite:///%kernel.project_dir%/var/test.db"
         PANTHER_APP_ENV=test
         PANTHER_WEB_SERVER_DIR=public
         PANTHER_ERROR_SCREENSHOT_DIR=./var/error-screenshots
         EOF
+        echo "=== .env.test.local created ==="
+        cat .env.test.local
 
     - name: Create database schema
       working-directory: examples/symfony
@@ -126,7 +128,10 @@ jobs:
     - name: Start Symfony web server
       working-directory: examples/symfony
       run: |
-        php -S 127.0.0.1:9080 public/index.php &
+        echo "=== Verifying test environment ==="
+        cat .env.test.local
+        echo "=== Starting PHP server ==="
+        APP_ENV=test php -S 127.0.0.1:9080 public/index.php &
         sleep 2
         echo "Web server started on http://127.0.0.1:9080"
         curl -I http://127.0.0.1:9080 || echo "Server not responding"
