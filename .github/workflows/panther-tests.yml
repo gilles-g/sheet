@@ -111,6 +111,8 @@ jobs:
         php bin/console --version
         echo "=== Public directory ==="
         ls -la public/
+        echo "=== Build directory (compiled assets) ==="
+        ls -la public/build/ || echo "Build directory not found"
         echo "=== Test data files ==="
         ls -la var/data/ || echo "Data directory not found"
         
