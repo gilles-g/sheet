@@ -52,7 +52,12 @@ docker compose exec php composer install
 docker compose exec php npm install
 ```
 
-**Note**: The `stimulus-sheet` package is installed directly from GitHub. The package.json references `github:gilles-g/sheet` which automatically pulls the latest version from the repository.
+**Note**: The `stimulus-sheet` package can be installed in two ways:
+
+1. **From GitHub** (default): `"stimulus-sheet": "git+https://github.com/gilles-g/sheet.git"` - pulls latest from repository
+2. **From local zip**: Generate a zip with `npm run create-zip`, extract it, then use `"stimulus-sheet": "file:./package"` - useful for offline or corporate environments
+
+See the [Local Installation Guide](../../docs/LOCAL_INSTALLATION.md) for detailed instructions on using the zip method.
 
 ### 4. Create the database and run migrations
 

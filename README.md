@@ -27,6 +27,17 @@ npm install github:gilles-g/sheet#v2.0.0 @hotwired/stimulus
 yarn add github:gilles-g/sheet @hotwired/stimulus
 ```
 
+### Local Installation (from Zip)
+
+For offline or corporate environments, you can install from a local zip file:
+
+1. Generate the zip: `npm run create-zip` (in the stimulus-sheet repository)
+2. Extract in your project: `unzip stimulus-sheet-2.0.0.zip`
+3. Add to your `package.json`: `"stimulus-sheet": "file:./package"`
+4. Run: `npm install`
+
+See the [Local Installation Guide](docs/LOCAL_INSTALLATION.md) for detailed instructions.
+
 ## Setup
 
 First, import the CSS in your application:

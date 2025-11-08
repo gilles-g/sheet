@@ -11,7 +11,8 @@
     "copy-css": "cp src/sheet.css dist/sheet.css",
     "dev": "rollup -c -w",
     "test": "echo \"No tests yet\" && exit 0",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "create-zip": "npm run build && bash scripts/create-zip.sh"
   },
   "files": [
     "dist",
