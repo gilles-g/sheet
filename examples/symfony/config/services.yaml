@@ -20,5 +20,15 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    # File storage service
+    App\Storage\FileStorage:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    # Add UserValueResolver with tag
+    App\Storage\UserValueResolver:
+        tags:
+            - { name: controller.argument_value_resolver, priority: 150 }
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

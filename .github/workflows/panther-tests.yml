@@ -21,7 +21,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
-        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, json, pdo
+        extensions: mbstring, xml, ctype, iconv, intl, dom, filter, gd, json
         tools: composer:v2
         coverage: none
 
@@ -87,23 +87,12 @@ jobs:
       working-directory: examples/symfony
       run: npm run build
 
-    - name: Create .env.test.local file
+    - name: Initialize test data
       working-directory: examples/symfony
       run: |
-        cat > .env.test.local << 'EOF'
-        DATABASE_URL="sqlite:///%kernel.project_dir%/var/test.db"
-        PANTHER_APP_ENV=test
-        PANTHER_WEB_SERVER_DIR=public
-        PANTHER_ERROR_SCREENSHOT_DIR=./var/error-screenshots
-        EOF
-        echo "=== .env.test.local created ==="
-        cat .env.test.local
-
-    - name: Create database schema
-      working-directory: examples/symfony
-      run: |
-        php bin/console doctrine:database:create --env=test --no-interaction
-        php bin/console doctrine:schema:update --force --env=test --no-interaction
+        php bin/console app:init-data --env=test --no-interaction
+        echo "=== Test data initialized ==="
+        ls -la var/data/ || echo "Data directory not found"
         
     - name: Warm up cache for test environment
       working-directory: examples/symfony
@@ -122,18 +111,14 @@ jobs:
         php bin/console --version
         echo "=== Public directory ==="
         ls -la public/
-        echo "=== Test database ==="
-        ls -la var/test.db || echo "Database not found"
+        echo "=== Test data files ==="
+        ls -la var/data/ || echo "Data directory not found"
         
     - name: Start Symfony web server
       working-directory: examples/symfony
       run: |
-        echo "=== Verifying test environment ==="
-        cat .env.test.local
-        echo "=== Starting PHP server with SQLite ==="
-        # Export DATABASE_URL explicitly to ensure PHP server uses SQLite
+        echo "=== Starting PHP server ==="
         export APP_ENV=test
-        export DATABASE_URL="sqlite:///%kernel.project_dir%/var/test.db"
         php -S 127.0.0.1:9080 public/index.php > server.log 2>&1 &
         SERVER_PID=$!
         sleep 3
@@ -153,7 +138,6 @@ jobs:
         PANTHER_CHROME_ARGUMENTS: "--disable-dev-shm-usage --no-sandbox"
         PANTHER_EXTERNAL_BASE_URI: "http://127.0.0.1:9080"
         APP_ENV: test
-        DATABASE_URL: "sqlite:///%kernel.project_dir%/var/test.db"
 
     - name: Show logs on failure
       if: failure()

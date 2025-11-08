@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Storage\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +25,7 @@ class UserController extends AbstractController
     }
     
     #[Route('/users/create-sheet', name: 'user_create_sheet')]
-    public function createSheet(Request $request, EntityManagerInterface $em): Response
+    public function createSheet(Request $request, EntityManager $em): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -49,13 +49,14 @@ class UserController extends AbstractController
     }
     
     #[Route('/users/{id}/edit-sheet', name: 'user_edit_sheet')]
-    public function editSheet(User $user, Request $request, EntityManagerInterface $em): Response
+    public function editSheet(User $user, Request $request, EntityManager $em): Response
     {
         $form = $this->createForm(UserType::class, $user);
         
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($user);
             $em->flush();
             
             return $this->render('user/_success_stream.html.twig', [
@@ -71,7 +72,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/{id}/delete', name: 'user_delete', methods: ['POST'])]
-    public function delete(User $user, Request $request, EntityManagerInterface $em): Response
+    public function delete(User $user, Request $request, EntityManager $em): Response
     {
         // Validate CSRF token
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {

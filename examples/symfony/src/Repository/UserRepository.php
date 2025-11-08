@@ -3,41 +3,42 @@
 namespace App\Repository;
 
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Storage\FileStorage;
 
-/**
- * @extends ServiceEntityRepository<User>
- */
-class UserRepository extends ServiceEntityRepository
+class UserRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private FileStorage $storage;
+
+    public function __construct(FileStorage $storage)
     {
-        parent::__construct($registry, User::class);
+        $this->storage = $storage;
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findAll(): array
+    {
+        $data = $this->storage->findAll('user');
+        $users = [];
+        foreach ($data as $item) {
+            $user = new User();
+            $user->setId($item['id']);
+            $user->setName($item['name']);
+            $user->setEmail($item['email']);
+            $users[] = $user;
+        }
+        return $users;
+    }
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function find(int $id): ?User
+    {
+        $item = $this->storage->find('user', $id);
+        if (!$item) {
+            return null;
+        }
+        
+        $user = new User();
+        $user->setId($item['id']);
+        $user->setName($item['name']);
+        $user->setEmail($item['email']);
+        return $user;
+    }
 }
