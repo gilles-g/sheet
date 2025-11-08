@@ -125,7 +125,7 @@ jobs:
 
     - name: Run Panther tests
       working-directory: examples/symfony
-      run: php bin/phpunit tests/SheetTest.php --testdox --verbose
+      run: php bin/phpunit tests/SheetTest.php --testdox
       env:
         PANTHER_NO_HEADLESS: 0
         PANTHER_CHROME_ARGUMENTS: "--disable-dev-shm-usage --no-sandbox"
