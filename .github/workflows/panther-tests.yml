@@ -121,7 +121,8 @@ jobs:
       run: |
         echo "=== Starting PHP server ==="
         export APP_ENV=test
-        php -S 127.0.0.1:9080 public/index.php > server.log 2>&1 &
+        # Use -t public to serve static files directly, without routing through Symfony
+        php -S 127.0.0.1:9080 -t public > server.log 2>&1 &
         SERVER_PID=$!
         sleep 3
         echo "Web server started on http://127.0.0.1:9080 (PID: $SERVER_PID)"
