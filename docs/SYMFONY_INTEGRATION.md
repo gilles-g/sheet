@@ -34,8 +34,12 @@ If you have a local package file (e.g., from a private build or custom version):
 # First, generate the package in the main library
 npm run package
 
-# Then in your Symfony project, install from the local file
+# Then in your Symfony project, install from the tarball
 npm install /path/to/stimulus-sheet-2.0.0.tgz @hotwired/stimulus @hotwired/turbo
+
+# Or extract and install from ZIP
+unzip /path/to/stimulus-sheet-2.0.0.zip
+npm install ./stimulus-sheet-temp @hotwired/stimulus @hotwired/turbo
 ```
 
 Or add it directly in your `package.json`:

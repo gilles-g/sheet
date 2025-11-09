@@ -27,26 +27,30 @@ npm install github:gilles-g/sheet#v2.0.0 @hotwired/stimulus
 yarn add github:gilles-g/sheet @hotwired/stimulus
 ```
 
-### From Local Package (ZIP or tarball)
+### From Local Package (tarball or ZIP)
 
-If you have a local package file, you can install it directly:
+If you have a local package file, you can install it:
 
 ```bash
-# Using NPM
+# Using NPM with tarball (recommended)
 npm install ./path/to/stimulus-sheet-2.0.0.tgz @hotwired/stimulus
-# or
-npm install ./path/to/stimulus-sheet-2.0.0.zip @hotwired/stimulus
 
-# Using Yarn
+# Using Yarn with tarball
 yarn add ./path/to/stimulus-sheet-2.0.0.tgz @hotwired/stimulus
+
+# For ZIP files, extract first then install
+unzip stimulus-sheet-2.0.0.zip
+npm install ./stimulus-sheet-temp @hotwired/stimulus
 ```
 
-To generate a distributable package:
+To generate distributable packages:
 ```bash
 npm run package
 ```
 
-This will create both a `.tgz` and `.zip` file in the `releases/` directory.
+This will create both formats in the `releases/` directory:
+- `.tgz` (tarball) - Can be installed directly by npm/yarn
+- `.zip` - Useful for manual distribution, needs extraction before npm install
 
 ## Setup
 
