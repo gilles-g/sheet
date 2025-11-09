@@ -27,6 +27,27 @@ npm install github:gilles-g/sheet#v2.0.0 @hotwired/stimulus
 yarn add github:gilles-g/sheet @hotwired/stimulus
 ```
 
+### From Local Package (ZIP or tarball)
+
+If you have a local package file, you can install it directly:
+
+```bash
+# Using NPM
+npm install ./path/to/stimulus-sheet-2.0.0.tgz @hotwired/stimulus
+# or
+npm install ./path/to/stimulus-sheet-2.0.0.zip @hotwired/stimulus
+
+# Using Yarn
+yarn add ./path/to/stimulus-sheet-2.0.0.tgz @hotwired/stimulus
+```
+
+To generate a distributable package:
+```bash
+npm run package
+```
+
+This will create both a `.tgz` and `.zip` file in the `releases/` directory.
+
 ## Setup
 
 First, import the CSS in your application:
