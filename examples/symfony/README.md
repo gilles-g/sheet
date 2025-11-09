@@ -298,6 +298,48 @@ Panther tests use a real browser (Chrome/Firefox) in headless mode. The tests wi
 3. Interact with the application like a real user
 4. Verify AJAX requests and DOM updates
 
+### CI Testing with Docker
+
+The project includes a GitHub Actions workflow (`panther-docker-tests.yml`) that runs Panther tests in Docker containers, ensuring a consistent testing environment that matches local development.
+
+#### CI Workflow Overview
+
+The CI workflow:
+1. Builds a specialized Docker image (`Dockerfile.ci`) with Chrome pre-installed
+2. Starts all services (nginx, php, database) using `compose.ci.yaml`
+3. Waits for services to be healthy
+4. Creates the test database and runs migrations
+5. Executes Panther tests inside the PHP container
+6. Provides detailed logs on failure
+
+#### Running CI Tests Locally
+
+To test the same Docker-based setup locally:
+
+```bash
+# Build and start the CI environment
+docker compose -f compose.ci.yaml up -d
+
+# Wait for services to be ready
+sleep 10
+
+# Create database
+docker compose -f compose.ci.yaml exec php php bin/console doctrine:database:create --env=test --no-interaction
+docker compose -f compose.ci.yaml exec php php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+# Run tests
+docker compose -f compose.ci.yaml exec php php bin/phpunit tests/SheetTest.php --testdox
+
+# Stop services
+docker compose -f compose.ci.yaml down -v
+```
+
+#### Key Differences from Development Setup
+
+- `Dockerfile.ci`: Includes Chrome and necessary dependencies for headless testing
+- `compose.ci.yaml`: Optimized for CI with test database and Panther configuration
+- Tests run inside the PHP container using the nginx service as the web server
+
 ## Environment Variables
 
 You can customize the application by setting environment variables in a `.env.local` file:
