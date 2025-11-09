@@ -46,6 +46,9 @@ jobs:
       with:
         chrome-version: stable
 
+    - name: Install ChromeDriver
+      uses: nanasess/setup-chromedriver@v2
+
     - name: Start Xvfb
       run: |
         Xvfb :0 -screen 0 1920x1080x24 &
