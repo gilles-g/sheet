@@ -116,30 +116,14 @@ jobs:
         echo "=== Test data files ==="
         ls -la var/data/ || echo "Data directory not found"
         
-    - name: Start Symfony web server
-      working-directory: examples/symfony
-      run: |
-        echo "=== Starting PHP server ==="
-        export APP_ENV=test
-        # Use -t public to serve static files directly, without routing through Symfony
-        php -S 127.0.0.1:9080 -t public > server.log 2>&1 &
-        SERVER_PID=$!
-        sleep 3
-        echo "Web server started on http://127.0.0.1:9080 (PID: $SERVER_PID)"
-        echo "=== Testing server response ==="
-        curl -v http://127.0.0.1:9080 || echo "Server not responding"
-        echo "=== Server logs ==="
-        cat server.log || echo "No server log file"
-        echo "=== Symfony logs ==="
-        cat var/log/test.log || echo "No Symfony test log found"
-
     - name: Run Panther tests
       working-directory: examples/symfony
       run: php bin/phpunit tests/SheetTest.php --testdox
       env:
         PANTHER_NO_HEADLESS: 0
         PANTHER_CHROME_ARGUMENTS: "--disable-dev-shm-usage --no-sandbox"
-        PANTHER_EXTERNAL_BASE_URI: "http://127.0.0.1:9080"
+        PANTHER_WEB_SERVER_DIR: public
+        PANTHER_WEB_SERVER_PORT: 9080
         APP_ENV: test
 
     - name: Show logs on failure
