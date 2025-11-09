@@ -29,6 +29,7 @@ jobs:
         PANTHER_APP_ENV=test
         PANTHER_NO_SANDBOX=1
         PANTHER_CHROME_ARGUMENTS="--disable-dev-shm-usage --no-sandbox --headless --disable-gpu"
+        PANTHER_EXTERNAL_BASE_URI=http://nginx
         EOF
 
     - name: Configure Git for private repo access
