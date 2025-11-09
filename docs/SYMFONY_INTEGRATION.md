@@ -26,6 +26,30 @@ composer require symfony/ux-turbo
 npm install stimulus-sheet @hotwired/stimulus @hotwired/turbo
 ```
 
+### Using Local Package File (Alternative)
+
+If you have a local package file (e.g., from a private build or custom version):
+
+```bash
+# First, generate the package in the main library
+npm run package
+
+# Then in your Symfony project, install from the local file
+npm install /path/to/stimulus-sheet-2.0.0.tgz @hotwired/stimulus @hotwired/turbo
+```
+
+Or add it directly in your `package.json`:
+
+```json
+{
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo": "^8.0.20",
+    "stimulus-sheet": "file:../path/to/stimulus-sheet-2.0.0.tgz"
+  }
+}
+```
+
 ## Setup
 
 ### 1. Configure Stimulus
