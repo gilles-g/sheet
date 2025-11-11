@@ -122,4 +122,48 @@ test.describe('Sheet Component', () => {
     const pointerEvents = await sheet.evaluate(el => window.getComputedStyle(el).pointerEvents);
     expect(pointerEvents).not.toBe('none');
   });
+
+  test('stacked sheets reveal lower sheet on the left side', async ({ page }) => {
+    // Open first sheet
+    await page.getByRole('button', { name: /📚 Nested Sheets/ }).click();
+    await page.waitForSelector('.sheet-container', { state: 'attached', timeout: 2000 });
+    await page.waitForTimeout(600);
+    
+    // Open second sheet
+    await page.getByRole('button', { name: 'Open Another Sheet' }).click();
+    await page.waitForTimeout(600);
+    
+    // Verify both sheets exist
+    const allSheets = page.locator('.sheet-container');
+    await expect(allSheets).toHaveCount(2);
+    
+    // Get the first (lower) sheet
+    const lowerSheetContainer = allSheets.first();
+    const lowerSheet = lowerSheetContainer.locator('.sheet');
+    
+    // Verify lower sheet is shifted to the left (reveal effect)
+    const transform = await lowerSheet.evaluate(el => window.getComputedStyle(el).transform);
+    // Transform should include translateX with negative value (shifted left)
+    expect(transform).toContain('matrix');
+    
+    // Verify lower sheet is dimmed
+    const filter = await lowerSheet.evaluate(el => window.getComputedStyle(el).filter);
+    expect(filter).toContain('brightness');
+    
+    // Verify lower sheet has pointer-events disabled
+    const pointerEvents = await lowerSheet.evaluate(el => window.getComputedStyle(el).pointerEvents);
+    expect(pointerEvents).toBe('none');
+    
+    // Get the second (top) sheet
+    const topSheetContainer = allSheets.nth(1);
+    const topSheet = topSheetContainer.locator('.sheet');
+    
+    // Verify top sheet has pointer-events enabled
+    const topPointerEvents = await topSheet.evaluate(el => window.getComputedStyle(el).pointerEvents);
+    expect(topPointerEvents).not.toBe('none');
+    
+    // Verify top sheet is not dimmed
+    const topFilter = await topSheet.evaluate(el => window.getComputedStyle(el).filter);
+    expect(topFilter).toBe('none');
+  });
 });
