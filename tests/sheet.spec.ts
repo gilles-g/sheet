@@ -13,7 +13,7 @@ test.describe('Sheet Component', () => {
   test('all demo buttons are visible', async ({ page }) => {
     await expect(page.getByRole('button', { name: /Simple Sheet/ })).toBeVisible();
     await expect(page.getByRole('button', { name: /Form Sheet/ })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Nested Sheets/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /^📚 Nested Sheets$/ })).toBeVisible();
     await expect(page.getByRole('button', { name: /Information Sheet/ })).toBeVisible();
     await expect(page.getByRole('button', { name: /Long Content Sheet/ })).toBeVisible();
   });
@@ -71,7 +71,7 @@ test.describe('Sheet Component', () => {
 
   test('nested sheets can be opened and stacked', async ({ page }) => {
     // Open the first sheet
-    await page.getByRole('button', { name: /Nested Sheets/ }).click();
+    await page.getByRole('button', { name: /^📚 Nested Sheets$/ }).click();
     
     // Wait for sheet content to be attached
     await page.waitForSelector('.sheet-container', { state: 'attached', timeout: 2000 });
