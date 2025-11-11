@@ -15,6 +15,7 @@ export default class SheetController extends Controller {
     close(): void;
     closeSheet(): void;
     showSheet(): void;
+    private pushPreviousSheetsLeft;
     updateSheetWidth(): void;
     private calculateWidth;
 }

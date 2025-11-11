@@ -22,6 +22,8 @@ class SheetController extends Controller {
     }
     showSheet() {
         this.calculateWidth();
+        // Push previous sheets to the left to reveal them
+        this.pushPreviousSheetsLeft();
         // Initial state - sheet is off-screen
         const docWidth = document.documentElement.clientWidth;
         this.sheetTarget.style.transform = `translate(${docWidth}px, 0px)`;
@@ -32,6 +34,20 @@ class SheetController extends Controller {
         setTimeout(() => {
             this.sheetTarget.style.transform = `translate(${this.widthValue}px, 0px)`;
         }, 100);
+    }
+    pushPreviousSheetsLeft() {
+        // Find all sheet containers
+        const container = this.element.parentElement;
+        if (!container)
+            return;
+        const allSheets = container.querySelectorAll('.sheet-container .sheet');
+        // Push all existing sheets (except this one) to the left
+        allSheets.forEach((sheet) => {
+            if (sheet !== this.sheetTarget) {
+                const htmlSheet = sheet;
+                htmlSheet.style.transform = 'translateX(-60px)';
+            }
+        });
     }
     updateSheetWidth() {
         this.calculateWidth();
@@ -130,9 +146,22 @@ class SheetListController extends Controller {
             // Reset transform on previous sheet
             const sheetDiv = previousSheet.querySelector(".sheet");
             if (sheetDiv) {
-                sheetDiv.style.transform = "translate(0px, 0px)";
+                // Get the sheet controller to recalculate position
+                const padding = this.calculateSheetPadding();
+                sheetDiv.style.transform = `translate(${padding}px, 0px)`;
             }
         }
+    }
+    calculateSheetPadding() {
+        const width = document.documentElement.clientWidth;
+        let padding = 0;
+        if (width >= 1160) {
+            padding = Math.floor((width - 960) / 2);
+        }
+        else if (width >= 768) {
+            padding = Math.floor((width - 768) / 2);
+        }
+        return padding;
     }
 }
 SheetListController.targets = ["container"];

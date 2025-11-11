@@ -24,4 +24,5 @@ export default class SheetListController extends Controller {
     addSheetFromUrl(url: string): Promise<void>;
     private createSheetElement;
     private removeSheet;
+    private calculateSheetPadding;
 }

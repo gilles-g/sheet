@@ -83,8 +83,23 @@ export default class SheetListController extends Controller {
       // Reset transform on previous sheet
       const sheetDiv = previousSheet.querySelector(".sheet") as HTMLElement;
       if (sheetDiv) {
-        sheetDiv.style.transform = "translate(0px, 0px)";
+        // Get the sheet controller to recalculate position
+        const padding = this.calculateSheetPadding();
+        sheetDiv.style.transform = `translate(${padding}px, 0px)`;
       }
     }
+  }
+
+  private calculateSheetPadding(): number {
+    const width = document.documentElement.clientWidth;
+    let padding = 0;
+
+    if (width >= 1160) {
+      padding = Math.floor((width - 960) / 2);
+    } else if (width >= 768) {
+      padding = Math.floor((width - 768) / 2);
+    }
+
+    return padding;
   }
 }
