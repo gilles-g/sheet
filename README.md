@@ -10,6 +10,16 @@ A Stimulus-based sheet/drawer component that slides in from the right side of th
 - Responsive design
 - Works with any HTML content
 
+## How It Works
+
+Sheets slide in from the right side of the screen and can be stacked on top of each other. Each sheet includes an overlay for visual depth.
+
+![Sheet Animation Sequence](docs/images/sheet-animation-sequence.svg)
+
+### Visual Overview
+
+![Superposed Sheets](docs/images/sheets-stacking.svg)
+
 ## Installation
 
 ### NPM (from GitHub)
