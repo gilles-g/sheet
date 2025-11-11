@@ -2,6 +2,10 @@
 
 A Stimulus-based sheet/drawer component that slides in from the right side of the screen.
 
+## 🚀 [Live Demo](https://gilles-g.github.io/sheet/)
+
+Try the interactive demo to see the sheet component in action!
+
 ## Features
 
 - Open a nice sheet from the right
