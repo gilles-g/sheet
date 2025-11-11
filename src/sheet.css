@@ -17,6 +17,13 @@
   visibility: visible;
 }
 
+.sheet-holder .sheet-container:last-of-type .sheet {
+  transition-delay: 0s, 0.4s, 0.4s;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.4s, box-shadow 0s, opacity 0s;
+}
+
 .sheet-holder .sheet-container:nth-last-of-type(2) .sheet {
   box-shadow: 0 0 10px -5px rgba(0, 0, 0, 0.2), 0 0 24px 2px rgba(0, 0, 0, 0.14), 0 0 30px 5px rgba(0, 0, 0, 0.12);
 }
