@@ -166,4 +166,91 @@ test.describe('Sheet Component', () => {
     const topFilter = await topSheet.evaluate(el => window.getComputedStyle(el).filter);
     expect(topFilter).toBe('none');
   });
+
+  test('closing top sheet restores previous sheet to full view', async ({ page }) => {
+    // Open first sheet
+    await page.getByRole('button', { name: /📚 Nested Sheets/ }).click();
+    await page.waitForSelector('.sheet-container', { state: 'attached', timeout: 2000 });
+    await page.waitForTimeout(600);
+    
+    // Open second sheet
+    await page.getByRole('button', { name: 'Open Another Sheet' }).click();
+    await page.waitForTimeout(600);
+    
+    // Verify both sheets exist and first is dimmed
+    const allSheetsBefore = page.locator('.sheet-container');
+    await expect(allSheetsBefore).toHaveCount(2);
+    
+    const lowerSheetBefore = allSheetsBefore.first().locator('.sheet');
+    const filterBefore = await lowerSheetBefore.evaluate(el => window.getComputedStyle(el).filter);
+    expect(filterBefore).toContain('brightness');
+    
+    // Close the top sheet
+    await page.getByRole('button', { name: 'Close', exact: true }).click();
+    await page.waitForTimeout(600);
+    
+    // Verify only one sheet remains
+    const allSheetsAfter = page.locator('.sheet-container');
+    await expect(allSheetsAfter).toHaveCount(1);
+    
+    // Verify remaining sheet is no longer dimmed
+    const remainingSheet = allSheetsAfter.first().locator('.sheet');
+    const filterAfter = await remainingSheet.evaluate(el => window.getComputedStyle(el).filter);
+    expect(filterAfter).toBe('none');
+    
+    // Verify remaining sheet has pointer-events enabled
+    const pointerEventsAfter = await remainingSheet.evaluate(el => window.getComputedStyle(el).pointerEvents);
+    expect(pointerEventsAfter).not.toBe('none');
+  });
+
+  test('single sheet has no reveal effect applied', async ({ page }) => {
+    // Open a single sheet
+    await page.getByRole('button', { name: /Simple Sheet/ }).click();
+    await page.waitForSelector('.sheet-container', { state: 'attached', timeout: 2000 });
+    await page.waitForTimeout(600);
+    
+    // Verify only one sheet exists
+    const allSheets = page.locator('.sheet-container');
+    await expect(allSheets).toHaveCount(1);
+    
+    // Get the sheet
+    const sheet = allSheets.first().locator('.sheet');
+    
+    // Verify sheet is NOT dimmed
+    const filter = await sheet.evaluate(el => window.getComputedStyle(el).filter);
+    expect(filter).toBe('none');
+    
+    // Verify sheet has pointer-events enabled
+    const pointerEvents = await sheet.evaluate(el => window.getComputedStyle(el).pointerEvents);
+    expect(pointerEvents).not.toBe('none');
+  });
+
+  test('lower sheet is partially visible on the left when stacked', async ({ page }) => {
+    // Open first sheet
+    await page.getByRole('button', { name: /📚 Nested Sheets/ }).click();
+    await page.waitForSelector('.sheet-container', { state: 'attached', timeout: 2000 });
+    await page.waitForTimeout(600);
+    
+    // Get bounding box of first sheet before stacking
+    const firstSheetBefore = page.locator('.sheet-container').first().locator('.sheet');
+    const boundingBoxBefore = await firstSheetBefore.boundingBox();
+    
+    // Open second sheet
+    await page.getByRole('button', { name: 'Open Another Sheet' }).click();
+    await page.waitForTimeout(600);
+    
+    // Get bounding box of first sheet after stacking
+    const firstSheetAfter = page.locator('.sheet-container').first().locator('.sheet');
+    const boundingBoxAfter = await firstSheetAfter.boundingBox();
+    
+    // Verify the first sheet is now visible on the left side (shifted left)
+    // The x position should be negative or less than before
+    expect(boundingBoxAfter).toBeTruthy();
+    expect(boundingBoxBefore).toBeTruthy();
+    
+    if (boundingBoxBefore && boundingBoxAfter) {
+      // The sheet should be shifted to the left (negative x or smaller x value)
+      expect(boundingBoxAfter.x).toBeLessThan(boundingBoxBefore.x);
+    }
+  });
 });
