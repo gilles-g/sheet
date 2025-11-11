@@ -40,6 +40,9 @@ export default class SheetController extends Controller {
   showSheet() {
     this.calculateWidth();
     
+    // Push previous sheets to the left to reveal them
+    this.pushPreviousSheetsLeft();
+    
     // Initial state - sheet is off-screen
     const docWidth = document.documentElement.clientWidth;
     this.sheetTarget.style.transform = `translate(${docWidth}px, 0px)`;
@@ -52,6 +55,21 @@ export default class SheetController extends Controller {
     setTimeout(() => {
       this.sheetTarget.style.transform = `translate(${this.widthValue}px, 0px)`;
     }, 100);
+  }
+
+  private pushPreviousSheetsLeft() {
+    // Find all sheet containers
+    const container = this.element.parentElement;
+    if (!container) return;
+    
+    const allSheets = container.querySelectorAll('.sheet-container .sheet');
+    // Push all existing sheets (except this one) to the left
+    allSheets.forEach((sheet) => {
+      if (sheet !== this.sheetTarget) {
+        const htmlSheet = sheet as HTMLElement;
+        htmlSheet.style.transform = 'translateX(-60px)';
+      }
+    });
   }
 
   updateSheetWidth() {
