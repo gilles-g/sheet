@@ -7,8 +7,9 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c && npm run copy-css",
+    "build": "rollup -c && npm run copy-css && npm run copy-to-docs",
     "copy-css": "cp src/sheet.css dist/sheet.css",
+    "copy-to-docs": "cp dist/sheet.css docs/sheet.css && cp dist/index.esm.js docs/index.esm.js",
     "dev": "rollup -c -w",
     "test": "echo \"No tests yet\" && exit 0",
     "prepare": "npm run build"

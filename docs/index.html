@@ -6,7 +6,7 @@
   <title>Stimulus Sheet - Live Demo</title>
   
   <!-- Include the sheet styles -->
-  <link rel="stylesheet" href="../dist/sheet.css">
+  <link rel="stylesheet" href="./sheet.css">
   
   <!-- Import map to resolve module specifiers -->
   <script type="importmap">
@@ -300,7 +300,7 @@ application.register("sheet-list", SheetListController);
   <!-- Import Stimulus and Controllers -->
   <script type="module">
     import { Application } from "@hotwired/stimulus";
-    import { SheetController, SheetListController } from "../dist/index.esm.js";
+    import { SheetController, SheetListController } from "./index.esm.js";
     
     // Initialize Stimulus application
     const application = Application.start();
