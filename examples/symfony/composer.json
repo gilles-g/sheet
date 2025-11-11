@@ -99,7 +99,6 @@
         "symfony/css-selector": "7.1.*",
         "symfony/debug-bundle": "7.1.*",
         "symfony/maker-bundle": "^1.0",
-        "symfony/panther": "^2.2",
         "symfony/stopwatch": "7.1.*",
         "symfony/web-profiler-bundle": "7.1.*"
     }
