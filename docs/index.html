@@ -245,6 +245,7 @@
         <button onclick="openSimpleSheet()">✨ Simple Sheet</button>
         <button onclick="openFormSheet()">📝 Form Sheet</button>
         <button onclick="openNestedSheet()">📚 Nested Sheets</button>
+        <button onclick="openInfiniteNestedSheet(1)">🔄 Infinite Nested Sheets</button>
         <button onclick="openInfoSheet()">ℹ️ Information Sheet</button>
         <button onclick="openLongContentSheet()">📄 Long Content Sheet</button>
       </div>
@@ -451,6 +452,50 @@ application.register("sheet-list", SheetListController);
           <div class="sheet-button-group">
             <button data-action="click->sheet#close">Close</button>
           </div>
+        </div>
+      `;
+      window.getSheetList().addSheet(content);
+    }
+    
+    function openInfiniteNestedSheet(level = 1) {
+      const content = `
+        <div class="sheet-demo-content">
+          <h2>🔄 Infinite Nested Sheet - Level ${level}</h2>
+          <p>This demonstrates infinite nesting capability. Each sheet can open another sheet, creating unlimited depth!</p>
+          
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+            <div style="font-size: 48px; font-weight: bold; margin-bottom: 10px;">${level}</div>
+            <div style="font-size: 14px; opacity: 0.9;">Current Nesting Level</div>
+          </div>
+          
+          <p><strong>Current Status:</strong></p>
+          <ul>
+            <li>You are at nesting level <strong>${level}</strong></li>
+            <li>You can open as many levels as you want</li>
+            <li>Each level stacks on top of the previous one</li>
+            <li>Close any level to return to the previous one</li>
+          </ul>
+          
+          <p style="margin-top: 20px;"><strong>Try it out:</strong> Click the button below to open level ${level + 1}!</p>
+          
+          <div class="sheet-button-group">
+            <button onclick="openInfiniteNestedSheet(${level + 1})">🚀 Open Level ${level + 1}</button>
+            <button class="btn-secondary" data-action="click->sheet#close">Close Level ${level}</button>
+          </div>
+          
+          ${level === 1 ? `
+          <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #667eea;">
+            <p style="margin: 0; color: #666; font-size: 14px;">
+              <strong>💡 Tip:</strong> This infinite nesting pattern is useful for:
+            </p>
+            <ul style="margin: 10px 0 0 0; color: #666; font-size: 14px;">
+              <li>Navigation hierarchies (categories → subcategories → items)</li>
+              <li>Drill-down data exploration</li>
+              <li>Multi-step wizards with dynamic steps</li>
+              <li>File/folder browsers</li>
+            </ul>
+          </div>
+          ` : ''}
         </div>
       `;
       window.getSheetList().addSheet(content);
